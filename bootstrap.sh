@@ -57,8 +57,8 @@ apt install -y apparmor apparmor-profiles apparmor-utils
 sed -i.bak 's/GRUB_CMDLINE_LINUX="\(.*\)"/GRUB_CMDLINE_LINUX="\1 apparmor=1 security=apparmor"/' /etc/default/grub
 update-grub
 
-# install ntp (tlsdate is no longer available in Debian stable)
-apt install -y ntp
+# install possibly missing software
+apt install -y ntp unbound sudo curl htop man
 
 # install monit
 # Since Debian Buster only in backports (I try systemd service. [Service] Restart=always ; RestartSecs=30)
