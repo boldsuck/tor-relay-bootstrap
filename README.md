@@ -17,9 +17,23 @@ tor-relay-bootstrap does this:
 
 To use it, set up a Debian server, SSH into it, switch to the root user, and:
 
+
+Recommendation: After the first login on a new server:
 ```sh
-apt-get install -y git
-git clone https://github.com/coldhakca/tor-relay-bootstrap.git
+passwd    # You should change given provider password!
+adduser user
+```
+
+If you want to change the hostname:
+```sh
+hostname host.domain.tld
+nano /etc/hostname
+nano /etc/hosts
+```
+Get & use this script:
+```sh
+apt install -y git
+git clone https://github.com/boldsuck/tor-relay-bootstrap.git
 cd tor-relay-bootstrap
 ./bootstrap.sh
 ```
