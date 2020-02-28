@@ -8,6 +8,8 @@
 
 ## allow incoming SSH
 -A INPUT -p tcp --dport 22 -j ACCEPT
+## allow incoming SSH, only on one IP
+#-A INPUT -p tcp -d your:ser:ver:ip::1 --dport 22 -j ACCEPT
 
 ## allow Tor ORPort, DirPort
 -A INPUT -p tcp --dport 9001 -j ACCEPT
