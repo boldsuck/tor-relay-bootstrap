@@ -1,6 +1,11 @@
 ## The IP address or hostname for incoming connections (leave commented and Tor will guess)
 #Address noname.example.com
 
+## If you have multiple network interfaces, specify one for outgoing traffic to use.
+## This option may be used twice, once with an IPv4 address and once with an IPv6 address.
+#OutboundBindAddress IP.address
+#OutboundBindAddress [IPv6::address]
+
 ## Set the nickname of this relay
 #Nickname ididnteditheconfig
 
@@ -10,14 +15,20 @@
 ## If you control multiple relays, include then in the family
 #MyFamily $keyid,$keyid,...
 
+## ORPort 443 & DirPort 80 is recommended if not used by another daemon on your server already.
+## They're often some of the few open ports on public WIFI networks. Layer 3 filtering of ports is becoming more and more common on public networks :-(
+## If your host supports IPv6, please enable it.
+#ORPort [IPv6::address]:443
+ORPort 443
+DirPort 80
 
-ORPort 9001
-DirPort 9030
 
-RelayBandwidthRate 30 MBytes
-RelayBandwidthBurst 100 MBytes
-#AccountingMax 32 GB
-#AccountingStart day 00:00
+RelayBandwidthRate 30 MBytes   # Throttle traffic to 30MB/s (240.000Kbps)
+RelayBandwidthBurst 100 MBytes # But allow bursts up to 100MB/s (800.000Kbps)
+#AccountingMax 10 TB
+## How we determine when our AccountingMax has been reached. sum|max|in|out (Default: max)
+#AccountingRule sum
+#AccountingStart month 1 00:00
 
 SocksPort 0
 SocksPolicy reject *
@@ -27,4 +38,3 @@ ExitPolicy reject *:*
 Log notice file /var/log/tor/notices.log
 DataDirectory /var/lib/tor
 RunAsDaemon 1
-

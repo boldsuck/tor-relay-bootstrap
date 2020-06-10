@@ -8,24 +8,29 @@ fi
 
 PWD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+# only install recommended but not suggested packages by default
+echo "== Configuring no suggested packages"
+cp $PWD/etc/apt/apt.conf.d/06norecommends /etc/apt/apt.conf.d/06norecommends
+
 # update software
 echo "== Updating software"
-apt update
-apt dist-upgrade -y
+apt-get update
+apt-get dist-upgrade -y
 
-apt install -y lsb-release gpg wget
+# install required software
+apt-get install -y lsb-release gpg wget
 
 # add official Tor repository
 if ! grep -q "https://deb.torproject.org/torproject.org" /etc/apt/sources.list; then
     echo "== Adding the official Tor repository"
     echo "deb https://deb.torproject.org/torproject.org `lsb_release -cs` main" >> /etc/apt/sources.list
     wget -O - https://deb.torproject.org/torproject.org/A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89.asc | apt-key add -
-    apt update
+    apt-get update
 fi
 
 # install tor and related packages
 echo "== Installing Tor and related packages"
-apt install -y deb.torproject.org-keyring tor nyx tor-geoipdb
+apt-get install -y deb.torproject.org-keyring tor nyx tor-geoipdb
 service tor stop
 
 # configure tor
@@ -33,10 +38,10 @@ cp $PWD/etc/tor/torrc /etc/tor/torrc
 
 # configure firewall rules
 echo "== Configuring firewall rules"
-apt install -y debconf-utils
+apt-get install -y debconf-utils
 echo "iptables-persistent iptables-persistent/autosave_v6 boolean true" | debconf-set-selections
 echo "iptables-persistent iptables-persistent/autosave_v4 boolean true" | debconf-set-selections
-apt install -y iptables iptables-persistent
+apt-get install -y iptables iptables-persistent
 cp $PWD/etc/iptables/rules.v4 /etc/iptables/rules.v4
 cp $PWD/etc/iptables/rules.v6 /etc/iptables/rules.v6
 chmod 600 /etc/iptables/rules.v4
@@ -44,24 +49,28 @@ chmod 600 /etc/iptables/rules.v6
 iptables-restore < /etc/iptables/rules.v4
 ip6tables-restore < /etc/iptables/rules.v6
 
-apt install -y fail2ban
+apt-get install -y fail2ban
 
 # configure automatic updates
 echo "== Configuring unattended upgrades"
-apt install -y unattended-upgrades apt-listchanges
-cp $PWD/etc/apt/apt.conf.d/20auto-upgrades /etc/apt/apt.conf.d/20auto-upgrades
-service unattended-upgrades restart
+apt-get install -y unattended-upgrades apt-listchanges
+# If auto updates is true (default) below is done by the postinst script.  'dpkg-reconfigure -plow unattended-upgrades'
+#cp $PWD/etc/apt/apt.conf.d/20auto-upgrades /etc/apt/apt.conf.d/20auto-upgrades
+#service unattended-upgrades restart
 
-# install apparmor (Since Debian Buster default with it)
-apt install -y apparmor apparmor-profiles apparmor-utils
+# apparmor is installed by default since Debian Buster
+apt-get install -y apparmor apparmor-profiles apparmor-utils
+if ! grep -q '^[^#].*apparmor=1' /etc/default/grub; then
 sed -i.bak 's/GRUB_CMDLINE_LINUX="\(.*\)"/GRUB_CMDLINE_LINUX="\1 apparmor=1 security=apparmor"/' /etc/default/grub
 update-grub
+fi
 
-# install possibly missing software
-apt install -y ntp unbound sudo curl htop man
+# install ntp & possibly missing software (some fail2ban action need curl)
+apt-get install -y ntp unbound sudo curl htop man
 
 # install monit
-# Since Debian Buster only in backports (I try systemd service. [Service] Restart=always ; RestartSecs=30)
+# Since Debian Buster monit is only in backports and systemd is standard now. With the setting 'Restart=on-failure'
+# systemd will autorecovery a daemon if it stops running by a code exception or 'kill -9 <pid>'.
 
 # configure sshd
 ORIG_USER=$(logname)
@@ -88,13 +97,16 @@ else
 fi
 
 # final instructions
+# OnionTip.com & TorTip.com has been down for a long time :-(
 echo ""
 echo "== Try SSHing into this server again in a new window, to confirm the firewall isn't broken"
 echo ""
 echo "== Edit /etc/tor/torrc"
 echo "  - Set Address, Nickname, Contact Info, and MyFamily for your Tor relay"
-echo "  - Optional: include a Bitcoin address in the 'ContactInfo' line"
-echo "    - This will enable you to receive donations from OnionTip.com"
+echo "  - Optional: If your host supports IPv6, please enable it."
+echo "  - Optional: include a Monero (OpenAlias) donation address in the 'ContactInfo' line"
+echo "    - Learn more about Monero & Bitcoin OpenAlias address:"
+echo "      https://web.getmonero.org/de/resources/moneropedia/address.html"
 echo "  - Optional: limit the amount of data transferred by your Tor relay (to avoid additional hosting costs)"
 echo "    - Uncomment the lines beginning with '#AccountingMax' and '#AccountingStart'"
 echo ""
