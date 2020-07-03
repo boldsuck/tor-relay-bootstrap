@@ -3,7 +3,7 @@
 :FORWARD DROP [0:0]
 :OUTPUT ACCEPT [0:0]
 
-## Allows all loopback (lo0) traffic and drop all traffic to 127/8 that doesn't use lo0
+## Allows all loopback (lo0) traffic and drop all traffic to ::1/128 that doesn't use lo0
 -A INPUT -i lo -j ACCEPT
 
 ## allow incoming SSH
