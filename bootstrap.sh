@@ -83,6 +83,11 @@ if [ -n "$ORIG_USER" ]; then
 		# user has logged in with SSH keys so we can disable password authentication
 		sed -i '/^#\?PasswordAuthentication/c\PasswordAuthentication no' /etc/ssh/sshd_config
 		echo "  - SSH password authentication disabled"
+		# adding the current user to sudo group and disable SSH login for the root user
+		usermod -aG sudo $ORIG_USER
+		sed -i '/^#\?PermitRootLogin/c\PermitRootLogin no' /etc/ssh/sshd_config
+		echo "  - Root login disabled (use su/sudo now)"
+
 		if [ $ORIG_USER == "root" ]; then
 			# user logged in as root directly (rather than using su/sudo) so make sure root login is enabled
 			sed -i '/^#\?PermitRootLogin/c\PermitRootLogin yes' /etc/ssh/sshd_config
