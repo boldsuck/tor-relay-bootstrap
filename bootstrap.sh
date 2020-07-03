@@ -46,8 +46,8 @@ cp $PWD/etc/iptables/rules.v4 /etc/iptables/rules.v4
 cp $PWD/etc/iptables/rules.v6 /etc/iptables/rules.v6
 chmod 600 /etc/iptables/rules.v4
 chmod 600 /etc/iptables/rules.v6
-iptables-restore < /etc/iptables/rules.v4
-ip6tables-restore < /etc/iptables/rules.v6
+/sbin/iptables-restore < /etc/iptables/rules.v4
+/sbin/ip6tables-restore < /etc/iptables/rules.v6
 
 apt-get install -y fail2ban
 
