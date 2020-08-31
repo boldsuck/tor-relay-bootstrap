@@ -6,14 +6,20 @@
 ## Allows all loopback (lo0) traffic and drop all traffic to 127/8 that doesn't use lo0
 -A INPUT -i lo -j ACCEPT
 
+## allow Tor ORPort, DirPort
+-A INPUT -p tcp --dport 80 -j ACCEPT
+-A INPUT -p tcp --dport 443 -j ACCEPT
+
+## Drop incoming connections which make more than 4 connection attempts upon port 22 within ten minutes
+## To list these damned IP's: 'nano /proc/net/xt_recent/ssh' or
+## 'cat /proc/net/xt_recent/ssh > recent-ssh.txt'
+#-A INPUT -p tcp --dport 22 -m state --state NEW -m recent --name ssh --set
+#-A INPUT -p tcp --dport 22 -m state --state NEW -m recent --name ssh --update --seconds 600 --hitcount 4 -j DROP
+
 ## allow incoming SSH
 -A INPUT -p tcp --dport 22 -j ACCEPT
 ## allow incoming SSH, only on one IP
 #-A INPUT -p tcp -d 1st.ser.ver.ip --dport 22 -j ACCEPT
-
-## allow Tor ORPort, DirPort
--A INPUT -p tcp --dport 80 -j ACCEPT
--A INPUT -p tcp --dport 443 -j ACCEPT
 
 ## ratelimit ICMP echo, allow all others
 -A INPUT -p icmp --icmp-type echo-request -m limit --limit 2/s -j ACCEPT
