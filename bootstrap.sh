@@ -54,9 +54,10 @@ apt-get install -y fail2ban
 # configure automatic updates
 echo "== Configuring unattended upgrades"
 apt-get install -y unattended-upgrades apt-listchanges
-# If auto updates is true (default) below is done by the postinst script.  'dpkg-reconfigure -plow unattended-upgrades'
-#cp $PWD/etc/apt/apt.conf.d/20auto-upgrades /etc/apt/apt.conf.d/20auto-upgrades
-#service unattended-upgrades restart
+# To disable|enable unattended upgrades run 'dpkg-reconfigure -plow unattended-upgrades'
+echo unattended-upgrades unattended-upgrades/enable_auto_updates boolean true | debconf-set-selections
+dpkg-reconfigure -f noninteractive unattended-upgrades
+service unattended-upgrades restart
 
 # apparmor is installed by default since Debian Buster
 apt-get install -y apparmor apparmor-profiles apparmor-utils
