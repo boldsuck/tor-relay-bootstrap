@@ -38,3 +38,14 @@ hostname host.domain.tld
 nano /etc/hostname
 nano /etc/hosts
 ```
+
+* Create an SSH key pair for SSH key authentication on your local computer, the computer you will log in from:
+```sh
+ssh-keygen -t rsa -b 4096  # Very compatible 4096 bit RSA key
+ssh-keygen -t ed25519  # Recommended! EdDSA key - Faster in authentication & very secure.
+```
+* Copy your public SSH key to the server:
+```sh
+ssh-copy-id -p 22 user@the.ser.ver.ip
+```
+This applies to Unix systems such as Linux, *BSD or MacOS in the terminal or in the shell. Windows users need PuTTY and generate the SSH key with PuTTYgen.
