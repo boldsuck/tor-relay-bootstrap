@@ -54,12 +54,12 @@ apt-get install -y fail2ban
 # configure automatic updates
 echo "== Configuring unattended upgrades"
 apt-get install -y unattended-upgrades apt-listchanges
-# To disable|enable unattended upgrades run 'dpkg-reconfigure -plow unattended-upgrades'
-echo unattended-upgrades unattended-upgrades/enable_auto_updates boolean true | debconf-set-selections
+# If you would prefer to disable it from the command line, run "sudo dpkg-reconfigure -plow unattended-upgrades".
+echo "unattended-upgrades unattended-upgrades/enable_auto_updates boolean true" | debconf-set-selections
 dpkg-reconfigure -f noninteractive unattended-upgrades
 service unattended-upgrades restart
 
-# apparmor is installed by default since Debian Buster
+# apparmor is installed by default since Debian Buster, make sure to add CMDLINE options only once.
 apt-get install -y apparmor apparmor-profiles apparmor-utils
 if ! grep -q '^[^#].*apparmor=1' /etc/default/grub; then
 sed -i.bak 's/GRUB_CMDLINE_LINUX="\(.*\)"/GRUB_CMDLINE_LINUX="\1 apparmor=1 security=apparmor"/' /etc/default/grub
