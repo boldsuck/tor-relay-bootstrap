@@ -18,7 +18,7 @@ apt-get update
 apt-get dist-upgrade -y
 
 # install required software
-apt-get install -y lsb-release wget
+apt-get install -y lsb-release gpg wget
 
 # add official Tor repository
 if ! grep -q "https://deb.torproject.org/torproject.org" /etc/apt/sources.list; then
