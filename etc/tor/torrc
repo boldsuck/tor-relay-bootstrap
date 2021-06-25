@@ -14,6 +14,8 @@
 #Nickname ididnteditheconfig
 
 ## Set your own contact info
+## With a working email address, Tor Weather will inform you in the event of a downtime.
+## Yes, it's back: https://github.com/thingless/torweather
 #ContactInfo 0xFFFFFFFF Random Person <nobody AT example dot com>
 
 ## If you control multiple relays, include then in the family

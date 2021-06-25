@@ -18,7 +18,7 @@ apt-get update
 apt-get dist-upgrade -y
 
 # install required software
-apt-get install -y lsb-release gpg wget
+apt-get install -y lsb-release wget
 
 # add official Tor repository
 if ! grep -q "https://deb.torproject.org/torproject.org" /etc/apt/sources.list; then
@@ -53,13 +53,13 @@ apt-get install -y fail2ban
 
 # configure automatic updates
 echo "== Configuring unattended upgrades"
+echo "== If you would prefer to disable it, run 'sudo dpkg-reconfigure -plow unattended-upgrades'"
 apt-get install -y unattended-upgrades apt-listchanges
-# If you would prefer to disable it from the command line, run "sudo dpkg-reconfigure -plow unattended-upgrades".
 echo "unattended-upgrades unattended-upgrades/enable_auto_updates boolean true" | debconf-set-selections
 dpkg-reconfigure -f noninteractive unattended-upgrades
 service unattended-upgrades restart
 
-# apparmor is installed by default since Debian Buster, make sure to add CMDLINE options only once.
+# apparmor is installed by default since Debian 10 "buster", make sure to add CMDLINE options only once.
 apt-get install -y apparmor apparmor-profiles apparmor-utils
 if ! grep -q '^[^#].*apparmor=1' /etc/default/grub; then
 sed -i.bak 's/GRUB_CMDLINE_LINUX="\(.*\)"/GRUB_CMDLINE_LINUX="\1 apparmor=1 security=apparmor"/' /etc/default/grub
@@ -70,7 +70,7 @@ fi
 apt-get install -y ntp unbound sudo curl htop man
 
 # install monit
-# Since Debian Buster monit is only in backports and systemd is standard now. With the setting 'Restart=on-failure'
+# Since Debian 10 "buster" monit is only in backports and systemd is standard now. With the setting 'Restart=on-failure'
 # systemd will autorecovery a daemon if it stops running by a code exception or 'kill -9 <pid>'.
 
 # configure sshd
@@ -86,9 +86,9 @@ if [ -n "$ORIG_USER" ]; then
 		echo "  - SSH password authentication disabled"
 		# adding the current user to sudo group and disable SSH login for the root user
 		usermod -aG sudo $ORIG_USER
+		echo "  - Granted sudo privileges to $ORIG_USER"
 		sed -i '/^#\?PermitRootLogin/c\PermitRootLogin no' /etc/ssh/sshd_config
 		echo "  - Root login disabled (use su/sudo now)"
-
 		if [ $ORIG_USER == "root" ]; then
 			# user logged in as root directly (rather than using su/sudo) so make sure root login is enabled
 			sed -i '/^#\?PermitRootLogin/c\PermitRootLogin yes' /etc/ssh/sshd_config
@@ -109,15 +109,27 @@ echo "== Try SSHing into this server again in a new window, to confirm the firew
 echo ""
 echo "== Edit /etc/tor/torrc"
 echo "  - Set Address, Nickname, Contact Info, and MyFamily for your Tor relay"
-echo "  - Optional: If your host supports IPv6, please enable it."
-echo "  - Optional: include a Monero (OpenAlias) donation address in the 'ContactInfo' line"
+echo "  - Optional: Just for fun, (nobody donates anything to you anyway)"
+echo "    include a Bitcoin or Monero (OpenAlias) donation address in the 'ContactInfo' line"
 echo "    - Learn more about Monero & Bitcoin OpenAlias address:"
 echo "      https://web.getmonero.org/de/resources/moneropedia/address.html"
 echo "  - Optional: limit the amount of data transferred by your Tor relay (to avoid additional hosting costs)"
 echo "    - Uncomment the lines beginning with '#AccountingMax' and '#AccountingStart'"
 echo ""
+echo "== If your host supports IPv6, please enable it"
+echo "  - Maybe the example in ~/tor-relay-bootstrap/etc/network/interfaces is helpful"
+echo ""
 echo "== Consider having /etc/apt/sources.list update over HTTPS and/or HTTPS+Tor"
 echo "   see https://guardianproject.info/2014/10/16/reducing-metadata-leakage-from-software-updates/"
 echo "   for more details"
+echo ""
+echo "== You may enable email reporting for unattended-upgrades & system's logfiles"
+echo "  - Make sure that you have a working mail setup on your system (mailx, nullmailer or alternatives)"
+echo "    then uncomment and adjust this lines in '/etc/apt/apt.conf.d/50unattended-upgrades':"
+echo "    '//Unattended-Upgrade::Mail' & '//Unattended-Upgrade::MailOnlyOnError"
+echo "  - You can monitor log files and receive a daily email report using tools like Logcheck or Logwatch"
+echo ""
+echo "== Recommendation: subscribe to the tor-relays & tor-announce mailing lists"
+echo "   have a look at https://lists.torproject.org/cgi-bin/mailman/listinfo"
 echo ""
 echo "== REBOOT THIS SERVER"
