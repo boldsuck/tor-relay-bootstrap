@@ -1,7 +1,4 @@
 *.swp
-### KDE ###
-# directory preferences #
-.directory
 ### Kate ###
 # Swap Files #
 .*.kate-swp

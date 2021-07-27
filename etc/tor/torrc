@@ -40,5 +40,6 @@ SocksPolicy reject *
 ExitPolicy reject *:*
 
 Log notice file /var/log/tor/notices.log
+## Is already in "/usr/share/tor/tor-service-defaults-torrc" by default.
 DataDirectory /var/lib/tor
 RunAsDaemon 1
