@@ -66,8 +66,9 @@ sed -i.bak 's/GRUB_CMDLINE_LINUX="\(.*\)"/GRUB_CMDLINE_LINUX="\1 apparmor=1 secu
 update-grub
 fi
 
-# install ntp & possibly missing software (some fail2ban action need curl)
-apt-get install -y ntp unbound sudo curl htop man
+# install possibly missing software (some fail2ban action need curl)
+# ntp deleted because systemd-timesyncd is running by default on Debian 11 "bullseye"
+apt-get install -y unbound sudo curl htop man
 
 # install monit
 # Since Debian 10 "buster" monit is only in backports and systemd is standard now. With the setting 'Restart=on-failure'
