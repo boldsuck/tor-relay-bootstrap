@@ -14,7 +14,7 @@
 ## To list these damned IP's: 'nano /proc/net/xt_recent/ssh' or
 ## 'cat /proc/net/xt_recent/ssh > recent-ssh.txt'
 #-A INPUT -p tcp --dport 22 -m state --state NEW -m recent --name ssh --set
-#-A INPUT -p tcp --dport 22 -m state --state NEW -m recent --name ssh --update --seconds 600 --hitcount 4 -j DROP
+#-A INPUT -p tcp --dport 22 -m state --state NEW -m recent --name ssh --update --seconds 600 --hitcount 4 --rttl -j DROP
 
 ## allow incoming SSH
 -A INPUT -p tcp --dport 22 -j ACCEPT
