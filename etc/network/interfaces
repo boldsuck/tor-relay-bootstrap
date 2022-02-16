@@ -10,8 +10,7 @@ iface lo inet loopback
 # The primary network interface      Attention! Adjust interface name: enp2s0
 allow-hotplug enp2s0
 iface enp2s0 inet static
-    address 203.0.113.11
-    netmask 255.255.255.255
+    address 203.0.113.11/32
     gateway 203.0.113.1
         up   ip addr add 203.0.113.12/32 dev enp2s0 label enp2s0:0
         down ip addr del 203.0.113.12/32 dev enp2s0 label enp2s0:0
@@ -27,8 +26,7 @@ iface enp2s0 inet static
 iface enp2s0 inet6 static
 ## If you're lucky, IPv6 addresses and gateway are in same subnet.
 ## Provider specifies IPv6 prefix 2001:db8:abc:a00/64 and gateway 2001:db8:abc:a00::1 or often gateway fe80::1.
-        address 2001:db8:abc:a00::2
-        netmask 64
+        address 2001:db8:abc:a00::2/64
         gateway 2001:db8:abc:a00::1  # or  gateway fe80::1
         up   ip -6 addr add 2001:db8:abc:a00::3/64 dev enp2s0
         down ip -6 addr del 2001:db8:abc:a00::3/64 dev enp2s0
@@ -41,8 +39,7 @@ iface enp2s0 inet6 static
 
 ## When the IPv6 addresses and gateway are in different subnets.
 ## Provider specifies IPv6 prefix 2001:db8:abc:a09/64 and gateway 2001:db8:abc:a00::1 (Notice diff. subnets :a09 und :a00)
-        address 2001:db8:abc:a09::2
-        netmask 64
+        address 2001:db8:abc:a09::2/64
         up   ip -6 addr add 2001:db8:abc:a09::3/64 dev enp2s0
         up   ip -6 addr add 2001:db8:abc:a09::4/64 dev enp2s0
         up   ip -6 addr add 2001:db8:abc:a09::5/64 dev enp2s0
