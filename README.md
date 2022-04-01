@@ -5,7 +5,6 @@ This is a script to bootstrap a Debian server to be a set-and-forget Tor relay. 
 
 tor-relay-bootstrap does this:
 
-* Configures only recommended, but not install suggested packages by default
 * Upgrades all the software on the system
 * Adds the deb.torproject.org repository to apt, so Tor updates will come directly from the Tor Project
 * Installs and configures Tor to be a relay (but still requires you to manually edit torrc to set Nickname, ContactInfo, etc. for this relay)

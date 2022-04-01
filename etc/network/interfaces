@@ -44,10 +44,10 @@ iface enp2s0 inet6 static
         up   ip -6 addr add 2001:db8:abc:a09::4/64 dev enp2s0
         up   ip -6 addr add 2001:db8:abc:a09::5/64 dev enp2s0
         ...
-        post-up  ip -6 route add 2001:db8:abc:a00::1 dev enp2s0
-        post-up  ip -6 route add default via 2001:db8:abc:a00::1
-        pre-down ip -6 route del default via 2001:db8:abc:a00::1
-        pre-down ip -6 route del 2001:db8:abc:a00::1 dev enp2s0
+        up   ip -6 route add 2001:db8:abc:a00::1 dev enp2s0
+        up   ip -6 route add default via 2001:db8:abc:a00::1
+        down ip -6 route del default via 2001:db8:abc:a00::1
+        down ip -6 route del 2001:db8:abc:a00::1 dev enp2s0
         down ip -6 addr del 2001:db8:abc:a09::3/64 dev enp2s0
         down ip -6 addr del 2001:db8:abc:a09::4/64 dev enp2s0
         down ip -6 addr del 2001:db8:abc:a09::5/64 dev enp2s0

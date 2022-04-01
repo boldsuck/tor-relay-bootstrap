@@ -8,9 +8,9 @@ fi
 
 PWD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-# only install recommended but not suggested packages by default
-echo "== Configuring no suggested packages"
-cp $PWD/etc/apt/apt.conf.d/06norecommends /etc/apt/apt.conf.d/06norecommends
+# only install recommended but not suggested packages by default <- that's default anyway
+#echo "== Configuring no suggested packages"
+#cp $PWD/etc/apt/apt.conf.d/06norecommends /etc/apt/apt.conf.d/06norecommends
 
 # update software
 echo "== Updating software"
@@ -21,10 +21,11 @@ apt-get dist-upgrade -y
 apt-get install -y lsb-release gpg wget
 
 # add official Tor repository
-if ! grep -q "https://deb.torproject.org/torproject.org" /etc/apt/sources.list; then
+if ! grep -q "https://deb.torproject.org/torproject.org" /etc/apt/sources.list.d/tor.list; then
     echo "== Adding the official Tor repository"
-    echo "deb https://deb.torproject.org/torproject.org `lsb_release -cs` main" >> /etc/apt/sources.list
-    wget -O - https://deb.torproject.org/torproject.org/A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89.asc | apt-key add -
+    touch /etc/apt/sources.list.d/tor.list
+    echo "deb https://deb.torproject.org/torproject.org `lsb_release -cs` main" >> /etc/apt/sources.list.d/tor.list
+    wget -qO- https://deb.torproject.org/torproject.org/A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89.asc | gpg --dearmor | tee /usr/share/keyrings/tor-archive-keyring.gpg >/dev/null
     apt-get update
 fi
 
@@ -59,16 +60,18 @@ echo "unattended-upgrades unattended-upgrades/enable_auto_updates boolean true" 
 dpkg-reconfigure -f noninteractive unattended-upgrades
 service unattended-upgrades restart
 
-# apparmor is installed by default since Debian 10 "buster", make sure to add CMDLINE options only once.
-apt-get install -y apparmor apparmor-profiles apparmor-utils
-if ! grep -q '^[^#].*apparmor=1' /etc/default/grub; then
-sed -i.bak 's/GRUB_CMDLINE_LINUX="\(.*\)"/GRUB_CMDLINE_LINUX="\1 apparmor=1 security=apparmor"/' /etc/default/grub
-update-grub
-fi
+# AppArmor is enabled by default since Debian 10 "buster"
+#apt-get install -y apparmor apparmor-profiles apparmor-utils
+#if ! grep -q '^[^#].*apparmor=1' /etc/default/grub; then
+#sed -i.bak 's/GRUB_CMDLINE_LINUX="\(.*\)"/GRUB_CMDLINE_LINUX="\1 apparmor=1 security=apparmor"/' /etc/default/grub
+#update-grub
+#fi
 
-# install possibly missing software (some fail2ban action need curl)
+# install possibly missing software
 # ntp deleted because systemd-timesyncd is running by default on Debian 11 "bullseye"
-apt-get install -y unbound sudo curl htop man
+echo "== Installing useful software for Tor relays:"
+echo "== sudo htop nload man unbound vnstat"
+apt-get install -y sudo htop nload man unbound vnstat
 
 # install monit
 # Since Debian 10 "buster" monit is only in backports and systemd is standard now. With the setting 'Restart=on-failure'
