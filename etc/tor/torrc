@@ -1,7 +1,7 @@
 ## The IP address or hostname for incoming connections (leave commented and Tor will guess)
 ## [NEW FEATURE] Relay IPv6 Address Discovery - https://www.mail-archive.com/tor-relays@lists.torproject.org/msg17760.html
 ## Since release-0.4.4.x now tor supports *two* "Address" statement which can be a hostname or IPv4 or IPv6 now.
-#Address noname.example.com
+#Address noname.example.com # <-This requires you to have working A and AAAA records.
 #Address IPv4.address
 #Address [IPv6::address]
 
