@@ -1,7 +1,7 @@
 tor-relay-bootstrap
 ===================
 
-This is a script to bootstrap a Debian server to be a set-and-forget Tor relay. I've tested it in Stretch & Buster, but it should work on any modern Debian or Ubuntu version. Pull requests are welcome.
+This is a script to bootstrap a Debian server to be a set-and-forget Tor relay. I've tested it in Buster & Bullseye, but it should work on any modern Debian or Ubuntu version. Pull requests are welcome.
 
 tor-relay-bootstrap does this:
 
