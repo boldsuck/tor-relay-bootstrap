@@ -6,8 +6,9 @@
 ## Allows all loopback (lo0) traffic and drop all traffic to 127/8 that doesn't use lo0
 -A INPUT -i lo -j ACCEPT
 
-## allow Tor ORPort, DirPort
--A INPUT -p tcp --dport 80 -j ACCEPT
+## uncomment Tor DirPort for exit DirPortFrontPage /etc/tor/tor-exit-notice.html
+#-A INPUT -p tcp --dport 80 -j ACCEPT
+## allow Tor ORPort
 -A INPUT -p tcp --dport 443 -j ACCEPT
 
 ## Drop incoming connections which make more than 4 connection attempts upon port 22 within ten minutes
