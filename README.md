@@ -40,7 +40,8 @@ nano /etc/hosts
 * Create an SSH key pair for SSH key authentication on your local computer, the computer you will log in from:
 ```sh
 ssh-keygen -t rsa -b 4096  # Very compatible 4096 bit RSA key
-ssh-keygen -t ed25519  # Recommended! EdDSA key - Faster in authentication & very secure.
+ssh-keygen -t ed25519  # Recommended! EdDSA key - Faster in authentication & very secure
+ssh-keygen -t ed25519-sk  # Or better yet, token-supported - FIDO/U2F hardware authenticator support was added in OpenSSH version 8.2
 ```
 * Copy your public SSH key to the server:
 ```sh
