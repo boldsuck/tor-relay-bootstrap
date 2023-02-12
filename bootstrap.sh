@@ -39,17 +39,26 @@ cp $PWD/etc/tor/torrc /etc/tor/torrc
 
 # configure firewall rules
 echo "== Configuring firewall rules"
-apt-get install -y debconf-utils
-echo "iptables-persistent iptables-persistent/autosave_v6 boolean true" | debconf-set-selections
-echo "iptables-persistent iptables-persistent/autosave_v4 boolean true" | debconf-set-selections
-apt-get install -y iptables iptables-persistent
-cp $PWD/etc/iptables/rules.v4 /etc/iptables/rules.v4
-cp $PWD/etc/iptables/rules.v6 /etc/iptables/rules.v6
-chmod 600 /etc/iptables/rules.v4
-chmod 600 /etc/iptables/rules.v6
-/sbin/iptables-restore < /etc/iptables/rules.v4
-/sbin/ip6tables-restore < /etc/iptables/rules.v6
+mv /etc/nftables.conf /etc/nftables.conf.bak
+cp $PWD/etc/nftables.conf /etc/nftables.conf
+chmod +x /etc/nftables.conf
+systemctl enable nftables
+systemctl daemon-reload
+echo "== You can list the rules with the following command: nft list ruleset"
 
+#apt-get install -y debconf-utils
+#echo "iptables-persistent iptables-persistent/autosave_v6 boolean true" | debconf-set-selections
+#echo "iptables-persistent iptables-persistent/autosave_v4 boolean true" | debconf-set-selections
+#apt-get install -y iptables iptables-persistent
+#cp $PWD/etc/iptables/rules.v4 /etc/iptables/rules.v4
+#cp $PWD/etc/iptables/rules.v6 /etc/iptables/rules.v6
+#chmod 600 /etc/iptables/rules.v4
+#chmod 600 /etc/iptables/rules.v6
+#/sbin/iptables-restore < /etc/iptables/rules.v4
+#/sbin/ip6tables-restore < /etc/iptables/rules.v6
+
+echo "== install fail2ban"
+echo "== Please NEVER configure fail2ban complain notices, they're a bigger plague than spam!"
 apt-get install -y fail2ban
 
 # configure automatic updates
@@ -68,7 +77,8 @@ service unattended-upgrades restart
 #fi
 
 # install possibly missing software
-# ntp deleted because systemd-timesyncd is running by default on Debian 11 "bullseye"
+# ntp deleted because systemd-timesyncd is running by default on Debian 11 "bullseye". Chronyd, ntpd or openntpd
+# can be installed afterwards, for a comparison see: https://chrony.tuxfamily.org/comparison.html
 echo "== Installing useful software for Tor relays:"
 echo "== sudo htop nload man unbound vnstat"
 apt-get install -y sudo htop nload man unbound vnstat
@@ -127,7 +137,7 @@ echo "== Consider having /etc/apt/sources.list update over HTTPS and/or HTTPS+To
 echo "   see https://guardianproject.info/2014/10/16/reducing-metadata-leakage-from-software-updates/"
 echo "   for more details"
 echo ""
-echo "== You may enable email reporting for unattended-upgrades & system's logfiles"
+echo "== You should enable email reporting for unattended-upgrades & system's logfiles"
 echo "  - Make sure that you have a working mail setup on your system (mailx, nullmailer or alternatives)"
 echo "    then uncomment and adjust this lines in '/etc/apt/apt.conf.d/50unattended-upgrades':"
 echo "    '//Unattended-Upgrade::Mail' & '//Unattended-Upgrade::MailOnlyOnError'"

@@ -19,13 +19,18 @@
 #ContactInfo 0xFFFFFFFF Random Person <nobody AT example dot com>
 
 ## If you control multiple relays, include then in the family
+## If you want nice graphics from your Relay family on OrNetStats https://nusenu.github.io/OrNetStats/
+## see https://github.com/nusenu/ContactInfo-Information-Sharing-Specification
+## Credit to nusenu for this work.
 #MyFamily $keyid,$keyid,...
 
 ## ORPort 443 & DirPort 80 is recommended if not used by another daemon on your server already.
 ## They're often some of the few open ports on public WIFI networks. Layer 3 filtering of ports is becoming more and more common on public networks :-(
 ## If your host supports IPv6, please enable it. NOTE: [New Feature] Relay IPv6 Address Discovery.
 ORPort 443
-DirPort 80
+## DirPort is deprecated for non-authority relays and is only used for
+## the Tor exit notice 'DirPortFrontPage' if no web server like nginx or Apache is available.
+#DirPort 80
 
 RelayBandwidthRate 30 MBytes   # Throttle traffic to 30MB/s (240.000Kbps)
 RelayBandwidthBurst 100 MBytes # But allow bursts up to 100MB/s (800.000Kbps)
