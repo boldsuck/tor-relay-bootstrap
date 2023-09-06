@@ -14,21 +14,24 @@
 #Nickname ididnteditheconfig
 
 ## Set your own contact info
-## With a working email address, Tor Weather will inform you in the event of a downtime.
-## Yes, it's back: https://github.com/thingless/torweather
+## With a working email address, https://github.com/thingless/torweather will inform you in the event of a downtime.
+## Tor Weather@tpo, is back: https://weather.torproject.org/login
 #ContactInfo 0xFFFFFFFF Random Person <nobody AT example dot com>
 
 ## If you control multiple relays, include then in the family
+## If you want nice graphics from your Relay family on OrNetStats https://nusenu.github.io/OrNetStats/
+## see https://github.com/nusenu/ContactInfo-Information-Sharing-Specification
+## Credit to nusenu for this work.
 #MyFamily $keyid,$keyid,...
 
-## ORPort 443 & DirPort 80 is recommended if not used by another daemon on your server already.
+## ORPort 443 or 8080 is recommended if not used by another daemon on your server already.
 ## They're often some of the few open ports on public WIFI networks. Layer 3 filtering of ports is becoming more and more common on public networks :-(
 ## If your host supports IPv6, please enable it. NOTE: [New Feature] Relay IPv6 Address Discovery.
 ORPort 443
 ## Since 0.4.6.5 - https://blog.torproject.org/new-stable-security-releases-03515-0449-0459-0465/
 ## DirPorts are only used on authorities & for exit DirPortFrontPage /etc/tor/tor-exit-notice.html, relays no longer advertise them.
+## If available use a web server like nginx or Apache for the Tor exit notice.
 #DirPort 80
-
 
 RelayBandwidthRate 30 MBytes   # Throttle traffic to 30MB/s (240.000Kbps)
 RelayBandwidthBurst 100 MBytes # But allow bursts up to 100MB/s (800.000Kbps)
@@ -40,9 +43,12 @@ RelayBandwidthBurst 100 MBytes # But allow bursts up to 100MB/s (800.000Kbps)
 SocksPort 0
 SocksPolicy reject *
 
+# WARNING: It is important to understand that exposing tor metrics publicly is dangerous to the Tor network users.
+# Obtain Tor relay detailed statistics:  curl -s localhost:9035/metrics
+MetricsPort 127.0.0.1:9035
+MetricsPortPolicy accept 127.0.0.1
+MetricsPortPolicy accept [::1]
+
 ExitPolicy reject *:*
 
 Log notice file /var/log/tor/notices.log
-## Is already in "/usr/share/tor/tor-service-defaults-torrc" by default.
-DataDirectory /var/lib/tor
-RunAsDaemon 1
