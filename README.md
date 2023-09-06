@@ -1,7 +1,7 @@
 tor-relay-bootstrap
 ===================
 
-This is a script to bootstrap a Debian server to be a set-and-forget Tor relay. I've tested it in Stretch & Buster, but it should work on any modern Debian or Ubuntu version. Pull requests are welcome.
+This is a script to bootstrap a Debian server to be a set-and-forget Tor relay. I've tested it in Buster & Bullseye, but it should work on any modern Debian or Ubuntu version. Pull requests are welcome.
 
 tor-relay-bootstrap does this:
 
@@ -18,7 +18,7 @@ To use it, set up a Debian server, SSH into it, switch to the root user ('su -' 
 * Get & use this script:
 ```sh
 apt update && apt install -y git
-git clone https://github.com/boldsuck/tor-relay-bootstrap.git
+git clone -b nft https://github.com/boldsuck/tor-relay-bootstrap.git
 cd tor-relay-bootstrap
 ./bootstrap.sh
 ```
@@ -41,6 +41,7 @@ nano /etc/hosts
 ```sh
 ssh-keygen -t rsa -b 4096  # Very compatible 4096 bit RSA key
 ssh-keygen -t ed25519  # Recommended! EdDSA key - Faster in authentication & very secure.
+ssh-keygen -t ed25519-sk  # Or better yet, token-supported - FIDO/U2F hardware authenticator support was added in OpenSSH version 8.2
 ```
 * Copy your public SSH key to the server:
 ```sh
