@@ -20,13 +20,13 @@ table netdev filter {
 	}
 
 	set ssh_whitelist_v6 {
-		    type ipv6_addr
-		    counter
-		    flags interval
-		    elements = { 2001:4dd0::/29, 2a0a:a540::/28, 2003::/19 }
+		type ipv6_addr
+		counter
+		flags interval
+		elements = { 2001:4dd0::/29, 2a0a:a540::/28, 2003::/19 }
 	}
 
-        # Tor authorities & snowflake-01.torproject.net, snowflake-02.torproject.net
+    # Tor authorities & snowflake-01.torproject.net, snowflake-02.torproject.net
 	set whitelist_v4 {
 		type ipv4_addr
 		flags constant
@@ -120,6 +120,21 @@ table netdev filter {
 }
 
 table inet mangle {
+
+	# List of ipv4 addresses to block. (~# nft list set inet mangle blocklist_v4)
+	set connlimit_v4 {
+		type ipv4_addr
+		size 65535
+		flags dynamic
+	}
+
+	# List of ipv6 addresses to block. (~# nft list set inet mangle blocklist_v6)
+	set connlimit_v6 {
+		type ipv6_addr
+		size 65535
+		flags dynamic
+	}
+
 	chain prerouting {
 		type filter hook prerouting priority -150;
 
@@ -128,5 +143,9 @@ table inet mangle {
 
 		# TCP SYN (CT NEW)
 		tcp flags & (fin|syn|rst|ack) != syn ct state new counter drop
+		# For the first packet of each connection (ie. packets matching ct state new), this adds an entry into connlimit set
+		# https://wiki.nftables.org/wiki-nftables/index.php/Meters#Doing_connlimit_with_nft
+		ct state new add @connlimit_v4 { ip saddr ct count over 100 } counter drop
+		ct state new add @connlimit_v6 { ip6 saddr ct count over 100 } counter drop
 	}
 }
