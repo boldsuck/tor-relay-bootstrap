@@ -143,6 +143,7 @@ table inet mangle {
 
 		# TCP SYN (CT NEW)
 		tcp flags & (fin|syn|rst|ack) != syn ct state new counter drop
+		
 		# For the first packet of each connection (ie. packets matching ct state new), this adds an entry into connlimit set
 		# https://wiki.nftables.org/wiki-nftables/index.php/Meters#Doing_connlimit_with_nft
 		ct state new add @connlimit_v4 { ip saddr ct count over 100 } counter drop
