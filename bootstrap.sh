@@ -73,8 +73,8 @@ service unattended-upgrades restart
 #fi
 
 # install possibly missing software
-# ntp deleted because systemd-timesyncd is running by default on Debian 11 "bullseye". Chronyd, ntpd or openntpd
-# can be installed afterwards, for a comparison see: https://chrony.tuxfamily.org/comparison.html
+# ntp deleted because it has been replaced with the ntpsec package, with the default system clock service now being systemd-timesyncd;
+# there is also support for chrony and openntpd. For a comparison see: https://chrony.tuxfamily.org/comparison.html
 echo "== Installing useful software for Tor relays:"
 echo "== sudo htop nload man unbound vnstat"
 apt-get install -y sudo htop nload man unbound vnstat
