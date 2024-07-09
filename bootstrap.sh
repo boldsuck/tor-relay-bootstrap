@@ -68,7 +68,8 @@ service unattended-upgrades restart
 #fi
 
 # install possibly missing software
-# ntp deleted because systemd-timesyncd is running by default on Debian 11 "bullseye"
+# ntp deleted because it has been replaced with the ntpsec package, with the default system clock service now being systemd-timesyncd;
+# there is also support for chrony and openntpd. For a comparison see: https://chrony.tuxfamily.org/comparison.html
 echo "== Installing useful software for Tor relays:"
 echo "== sudo htop nload man unbound vnstat"
 apt-get install -y sudo htop nload man unbound vnstat
@@ -127,7 +128,7 @@ echo "== Consider having /etc/apt/sources.list update over HTTPS and/or HTTPS+To
 echo "   see https://guardianproject.info/2014/10/16/reducing-metadata-leakage-from-software-updates/"
 echo "   for more details"
 echo ""
-echo "== You may enable email reporting for unattended-upgrades & system's logfiles"
+echo "== You should enable email reporting for unattended-upgrades & system's logfiles"
 echo "  - Make sure that you have a working mail setup on your system (mailx, nullmailer or alternatives)"
 echo "    then uncomment and adjust this lines in '/etc/apt/apt.conf.d/50unattended-upgrades':"
 echo "    '//Unattended-Upgrade::Mail' & '//Unattended-Upgrade::MailOnlyOnError'"
